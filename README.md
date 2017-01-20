@@ -6,7 +6,8 @@ We use one directory per configuration type.
 
 For security reasons we don't share the directory 'secrets' but only secrets-template
 
-## Init kubectl configuration from azure containers created by (jenkins-infra)[https://github.com/jenkins-infra/azure]
+## Init kubectl configuration 
+**from azure containers service created by [jenkins-infra](https://github.com/jenkins-infra/azure)**
 
 ```az acs kubernetes get-credentials --dns-prefix ${PREFIX}mgmt --location=eastus```
 
@@ -27,6 +28,13 @@ This procedure describe how to deploy one datadog per kubernetes host (master/sl
 
 ##Deploy fluentd agent
 This procedure describe how to deploy one fluentd per kubernetes host (master/slave)
+We try two different approach.
+    - kubernet mount a azure shared disks storage and fluentd write logs on this volume
+      which means that configuration is at kubernetes level
+    - fluentd use azurestorageplugin to write logs
+      which means that configuration is at fluentd level
+    At the moment, we use the first approach 
+
 1. Create secret configuration file (!this secret should be commit)
 ```cp secret-templates/azure-secret.yaml to secret/azure-secret.yaml```
 2. Update secret/azure-secret.yaml with correct secret value
