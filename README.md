@@ -7,6 +7,7 @@ We use one directory per configuration type.
 For security reasons we don't share the directory 'secrets' but only secrets-template
 
 ## Init kubectl configuration 
+
 **from azure containers service created by [jenkins-infra](https://github.com/jenkins-infra/azure)**
 
 ```az acs kubernetes get-credentials --dns-prefix ${PREFIX}mgmt --location=eastus```
