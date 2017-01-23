@@ -11,7 +11,7 @@ spec:
             name: fluentd
         spec:
             containers:
-                - image: olblak/fluentd-k8s-azure:0.6.0
+                - image: olblak/fluentd-k8s-azure:0.6.1-beta
                   imagePullPolicy: Always
                   name: fluentd
                   env:
@@ -25,23 +25,23 @@ spec:
                         secretKeyRef: 
                             name: azure-secret
                             key: azurelogsstorageaccountkey
-# Following variables are commented as we don't publish logs to azure blob storage at the moment.
-# Cfr olblak/fluentd-k8s-azure:0.6.0
-#                    - name: AZURE_ARCHIVE_STORAGE_ACCOUNT
-#                      valueFrom:
-#                        secretKeyRef: 
-#                            name: azure-secret
-#                            key: azurearchivestorageaccount
-#                    - name: AZURE_ARCHIVE_STORAGE_ACCESS_KEY
-#                      valueFrom:
-#                        secretKeyRef: 
-#                            name: azure-secret
-#                            key: azurearchivestorageaccesskey
-#                    - name: AZURE_ARCHIVE_CONTAINER
-#                      valueFrom:
-#                        secretKeyRef: 
-#                            name: azure-secret
-#                            key: azurearchivecontainer
+                # Following variables are used by fluent-plugin-azurestorage
+                # Cfr olblak/fluentd-k8s-azure:0.6.1
+                    - name: AZURE_ARCHIVE_STORAGE_ACCOUNT
+                      valueFrom:
+                        secretKeyRef: 
+                            name: azure-secret
+                            key: azurearchivestorageaccount
+                    - name: AZURE_ARCHIVE_STORAGE_ACCESS_KEY
+                      valueFrom:
+                        secretKeyRef: 
+                            name: azure-secret
+                            key: azurearchivestorageaccesskey
+                    - name: AZURE_ARCHIVE_CONTAINER
+                      valueFrom:
+                        secretKeyRef: 
+                            name: azure-secret
+                            key: azurearchivecontainer
 
                   volumeMounts:
                     - name: logs
