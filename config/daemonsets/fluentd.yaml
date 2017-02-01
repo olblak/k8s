@@ -11,7 +11,7 @@ spec:
             name: fluentd
         spec:
             containers:
-                - image: olblak/fluentd-k8s-azure:0.6.1-beta
+                - image: olblak/fluentd-k8s-azure:0.7.0
                   imagePullPolicy: Always
                   name: fluentd
                   env:
