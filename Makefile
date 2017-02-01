@@ -4,7 +4,7 @@ include .env
 apply: apply_secrets apply_daemonsets
 
 apply_daemonsets: 
-	@kubectl apply -f config/daemonsets
+	@python scripts/apply_daemonset.py
 
 apply_secrets:
 	@kubectl apply -f config/secrets
