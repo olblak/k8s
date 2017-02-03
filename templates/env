@@ -1,0 +1,33 @@
+# Required by azure-cli command
+PREFIX='Prefix define and use by terraform' 			#Mandatory
+LOCATION='Location of kubernetes cluster defined like eastus'	#Mandatory
+
+# Required by datadog
+DATADOG_API_KEY='Datadog api key'				#Mandatory
+
+# Required by fluentd
+
+# fluent-plugin-azure-loganalytics:
+# Use to configure fluentd plugin
+# ! Don't forget to enable customs logs preview feature as explaine here
+# ../doc/enable_azure_custom_logs.png
+
+STORAGE_ACCOUNT_NAME=''  #Require azure-cli for default value
+STORAGE_ACCOUNT_KEY=''	 #Require azure-cli for default value
+
+# Kubernetes: Two following key are used by kubernetes to mount shared disk storage
+# Two next key value can be found following this documenation -> https://docs.microsoft.com/en-us/azure/log-analytics/log-analytics-get-started
+# azurelogsstorageaccountkey == PRIMARY KEY
+# azurelogsanalyticsworkspace == WORKSPACE ID
+# A screenshot is avaible here -> ../doc/get_azure_OMS_credentials.png
+
+
+# fluent-plugin-azurestorage:
+# Use to configure fluentd-azure-storage plugin
+# which is not use at the moment
+#
+
+STORAGE_ACCOUNT_LOGS_KEY='' 						#Mandatory
+AZURE_ARCHIVE_CONTAINER=''	#Require azure-cli for default value
+AZURE_OMS_CUSTOMER_ID='' 	#Require azure-cli for default value
+
