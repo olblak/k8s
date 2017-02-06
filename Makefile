@@ -21,10 +21,13 @@ init_secrets:
 		/bin/bash scripts/secrets/$$script; \
 	done
 
-get_kubectl_config:
+init_kubectl_azure:
 	# !Require box ssh access
 	# Require ssh key to be id_rsa -> https://github.com/Azure/azure-cli/issues/1878
 	az acs kubernetes get-credentials --debug --dns-prefix $(PREFIX)mgmt --location=$(LOCATION)
+
+init_kubectl_ssh:
+	scp azureuser@$(PREFIX)mgmt.$(LOCATION).cloudapp.azure.com:/home/azureuser/.kube/config ~/.kube/config
 
 status: 
 	@kubectl get pods
