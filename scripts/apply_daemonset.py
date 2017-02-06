@@ -6,15 +6,13 @@ from subprocess import call
 from subprocess import Popen
 
 '''
-    As kubernetes' daemonset rolling update is a feature not yet implemented
-    -> https://github.com/kubernetes/kubernetes/issues/22543
-    We still need to execute this script that execute following logics
-        if daemonset version is different from config file
+    As Daemonset rolling update is a feature not yet implemented in K    ubernetes -> https://github.com/kubernetes/kubernetes/issues/22543
+    We have to execute this script that execute following logics:
+        if daemonset version is different from config file:
             delete daemonset (without deleting pods)
             create daemonset 
-            delete old pods
-            new pods with correct configuration will be deploy based
-            on daemonset template.
+            delete old pods (create by previous daemonset)
+            new pods will automatically created by new daeemonset config
 '''
 
 def rollingupdate(daemonset):
