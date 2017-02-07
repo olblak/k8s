@@ -1,35 +1,42 @@
 .PHONY: *
-include .env
 
-apply: apply_secrets apply_daemonsets
+include vars/default.sh
+include vars/config.sh
 
-apply_daemonsets: 
+apply: test apply/secrets apply/daemonsets
+
+apply/daemonsets:
 	@python scripts/apply_daemonset.py
 
-apply_secrets:
+apply/secrets:
 	@kubectl apply -f config/secrets
 
-clean: 
+delete:
+	@kubectl delete -f config/daemonsets
+	@kubectl delete -f config/secrets
+
+clean:
 	@echo "Delete secrets folders"
 	@rm -Rf config/secrets
 
-init: init_secrets
+init: init/secrets
 
-init_secrets: 
+init/secrets:
 	@for script in `ls scripts/secrets`; do \
 		echo "Execute: $$script"; \
 		/bin/bash scripts/secrets/$$script; \
 	done
 
-init_kubectl_azure:
+init/kubectl_azure:
 	# !Require box ssh access
 	# Require ssh key to be id_rsa -> https://github.com/Azure/azure-cli/issues/1878
+	# version: 0.1.8 az acs kubernetes get-credentials -n containerservice-overnink8s -g overnink8s
 	az acs kubernetes get-credentials --debug --dns-prefix $(PREFIX)mgmt --location=$(LOCATION)
 
-init_kubectl_ssh:
+init/kubectl_ssh:
 	scp azureuser@$(PREFIX)mgmt.$(LOCATION).cloudapp.azure.com:/home/azureuser/.kube/config ~/.kube/config
 
-status: 
+status:
 	@kubectl get pods
 
 test:
