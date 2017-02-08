@@ -1,3 +1,4 @@
 config/secrets
 .env
 vars/config.sh
+*.swp
