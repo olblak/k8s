@@ -14,6 +14,13 @@ spec:
                 - image: olblak/fluentd-k8s-azure:0.7.0
                   imagePullPolicy: Always
                   name: fluentd
+                  resources:
+                    requests:
+                        memory: "350Mi"
+                        cpu: "0.1"
+                    limits:
+                        memory: "400Mi"
+                        cpu: "0.2"
                   env:
                     - name: AZURE_WORKSPACE_ID
                       valueFrom:

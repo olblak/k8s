@@ -14,6 +14,13 @@ spec:
       - image: datadog/docker-dd-agent:latest
         imagePullPolicy: Always
         name: dd-agent
+        resources:
+            requests:
+                memory: "200Mi"
+                cpu: "0.1"
+            limits:
+                memory: "400Mi"
+                cpu: "0.2"
         ports:
           - containerPort: 8125
             name: dogstatsdport
