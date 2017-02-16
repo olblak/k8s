@@ -6,5 +6,5 @@ set +e
 source ./scripts/helpers.sh
 
 while read -r line; do 
-    gpg --passphrase "$VAULT_PASSWORD" -d --output "${line/gpg/yaml}" "$line"
+    gpg --passphrase "$VAULT_PASSWORD" --yes -d --output "${line/gpg/yaml}" "$line"
 done < <(find ./config/env/$ENV/secrets -name '*.gpg') 
