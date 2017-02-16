@@ -9,7 +9,7 @@ pipeline {
     }
 
     stages {
-       stage('Deploy') {
+       stage('Init') {
             steps {
                 echo "Checkout Repository"
                 checkout scm
@@ -19,10 +19,16 @@ pipeline {
                     sh 'ls -al $SSH_AUTH_SOCK || true'
                     sh 'make init'
                 }
+            }
+        }
+
+       stage('Deploy') {
+            steps {
                 echo 'Apply Kubernetes Resources'
                 sh 'make apply'
             }
         }
+
     }
     post {
         always {
