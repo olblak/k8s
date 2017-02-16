@@ -1,4 +1,6 @@
 config/secrets
+config/env/**/secrets/*yaml
 .env
 vars/config.sh
 *.swp
+.kube
