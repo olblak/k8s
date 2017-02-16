@@ -1,7 +1,7 @@
 .PHONY: *
 
 include vars/default.sh
--include vars/config.sh
+sinclude vars/config.sh
 
 export PATH := ./bin:$(PATH)
 export KUBECONFIG := .kube/config
@@ -9,7 +9,7 @@ export KUBECONFIG := .kube/config
 apply: apply/secrets apply/configmaps apply/daemonsets apply/roles
 
 apply/daemonsets:
-	@python scripts/apply_daemonset.py
+	@/bin/bash scripts/apply_daemonset.sh
 
 apply/secrets:
 	@kubectl apply -f config/env/dev/secrets
