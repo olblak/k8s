@@ -1,7 +1,7 @@
 .PHONY: *
 
 include vars/default.sh
-include vars/config.sh
+-include vars/config.sh
 
 export PATH := ./bin:$(PATH)
 export KUBECONFIG := .kube/config
