@@ -7,8 +7,11 @@ function init_secrets_folder {
     fi
 }
 
-# shellcheck disable=SC1091
-source vars/config.sh
+if [ -f vars/config.sh ];  then
+    # shellcheck disable=SC1091
+    source vars/config.sh
+fi
+
 # shellcheck disable=SC1091
 source vars/default.sh
 # shellcheck disable=SC1091
