@@ -1,0 +1,40 @@
+---
+apiVersion: v1
+kind: ReplicationController
+metadata:
+    name: plugins-jenkins
+    labels:
+        app: plugin-jenkins
+        type: plugins-jenkins
+        logtype: archive
+spec:
+    replicas: 1
+    template:
+        metadata:
+            labels:
+                app: plugins-jenkins
+                type: plugins-jenkins
+                logtype: archive
+        spec:
+            containers:
+                - name: plugins-jenkins
+                  image: jenkinsciinfra/plugin-site:latest
+                  imagePullPolicy: Always
+                  ports:
+                      - containerPort: 5000
+                        protocol: TCP
+                      - containerPort: 8080
+                        protocol: TCP
+                  env:
+                      - name: REST_API_URL
+                        valueFrom:
+                            configMapKeyRef:
+                                name: plugins-jenkins
+                                key: plugins.jenkins.api.url
+                      - name: DATA_FILE_URL
+                        valueFrom:
+                            configMapKeyRef:
+                                name: plugins-jenkins
+                                key: plugins.jenkins.data.file.url
+
+    # It seems that this pod require quite a lot of resources, so let's wait and see before defining resource limitation
