@@ -1,7 +1,7 @@
 .PHONY: *
 
-include vars/default.sh
-sinclude vars/config.sh
+include vars/default
+sinclude vars/config
 
 export PATH := ./bin:$(PATH)
 export KUBECONFIG := .kube/config
@@ -26,7 +26,6 @@ clean: clean/secrets
 
 clean/secrets:
 	@echo "Delete secrets folders"
-	@rm -Rf config/secrets
 	@/bin/bash ./scripts/clean_secrets.sh
 
 clean/roles:
@@ -42,6 +41,7 @@ generate/secrets:
 		echo $$script; \
 		/bin/bash $$script; \
 	done
+	@/bin/bash  ./scripts/encrypt_secrets.sh
 
 init: init/secrets init/kubectl/ssh
 
