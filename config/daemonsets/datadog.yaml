@@ -1,19 +1,19 @@
 apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
-  name: dd-agent
+  name: datadog
 spec:
   template:
     metadata:
       labels:
-        app: dd-agent
+        app: datadog
         logtype: archive
-      name: dd-agent
+      name: datadog
     spec:
       containers:
-      - image: datadog/docker-dd-agent:latest
+      - image: datadog/docker-datadog:latest
         imagePullPolicy: Always
-        name: dd-agent
+        name: datadog
         resources:
             requests:
                 memory: "200Mi"
