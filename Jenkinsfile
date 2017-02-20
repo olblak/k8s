@@ -2,9 +2,6 @@ pipeline {
     agent any
 
     environment {
-        ENV = "dev"
-        LOCATION = "eastus"
-        PREFIX = "overnin"
         VAULT_PASSWORD = credentials('vault_password')
     }
 

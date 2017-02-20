@@ -17,6 +17,11 @@ function apply_resource {
 # Browse DEFINITIONS_PATH for kubernetes configurations files 
 # Based on resource kind, we may have to apply different workflows
 function run {
+    echo "Apply $ENV configurations"
+    if [ ! -d "$CONFIGURATION_PATH" ]; then 
+        echo "No $ENV configurations found"; 
+        exit 0
+    fi
     TORESTART=false
     while read -r file; do
         NAME="$(dirname "$file")"

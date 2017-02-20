@@ -25,7 +25,7 @@ if [ -f k8s.cfg ];  then
     source k8s.cfg
 fi
 
-: "${CONFIGURATIONS_PATH:=./configurations/$ENV/}"
-: "${DEFINITIONS_PATH:=./definitions}"
+source k8s.default
+
 
 init_configurations_folder

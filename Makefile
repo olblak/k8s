@@ -36,15 +36,10 @@ init/secrets:
 	/bin/bash  ./scripts/decrypt_secrets.sh
 
 init/kubectl/azure:
-	# !Require box ssh access
-	# Require ssh key to be id_rsa -> https://github.com/Azure/azure-cli/issues/1878
-	# version: 0.1.8 az acs kubernetes get-credentials -n containerservice-overnink8s -g overnink8s
-	az acs kubernetes get-credentials --debug --dns-prefix $(PREFIX)mgmt --location=$(LOCATION)
+	@/bin/bash ./scripts/init_kubectl.sh azure
 
 init/kubectl/ssh:
-	# Allow us to configure kubectl without az configuration
-	@if [ ! -d .kube ]; then mkdir .kube; fi
-	scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no azureuser@$(PREFIX)mgmt.$(LOCATION).cloudapp.azure.com:~/.kube/config .kube/config
+	@/bin/bash ./scripts/init_kubectl.sh ssh
 
 status:
 	@kubectl get pods --all-namespaces

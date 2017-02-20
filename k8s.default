@@ -1,3 +1,8 @@
-PREFIX=jenkinsci
-LOCATION=eastus
-ENV=staging
+#!/bin/bash
+
+: "${PREFIX:=jenkinsci}"
+: "${LOCATION:=eastus}"
+: "${ENV:=staging}"
+# Following keys should not be override
+: "${CONFIGURATIONS_PATH:=./configurations/$ENV/}"
+: "${DEFINITIONS_PATH:=./definitions}"

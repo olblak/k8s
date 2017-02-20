@@ -3,6 +3,7 @@
 .kube
 configurations/**/**/secrets.yaml
 configurations/**/**/secret.yaml
+k8s.cfg
 
 #Obsolete
 config/secrets
