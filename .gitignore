@@ -1,6 +1,10 @@
-config/secrets
-config/env/**/secrets/*yaml
 .env
-vars/config.sh
 *.swp
 .kube
+configurations/**/**/secrets.yaml
+configurations/**/**/secret.yaml
+
+#Obsolete
+config/secrets
+config/env/**/secrets/*yaml
+vars/config.sh

@@ -7,4 +7,4 @@ source ./scripts/helpers.sh
 
 while read -r line; do 
     gpg --passphrase "$VAULT_PASSWORD" --yes -d --output "${line/gpg/yaml}" "$line"
-done < <(find "$SECRETS_PATH" -name '*.gpg') 
+done < <(find "$CONFIGURATIONS_PATH" -mindepth 1 -maxdepth 2 -name '*.gpg' | sort) 

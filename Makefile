@@ -1,26 +1,19 @@
 .PHONY: *
 
-include vars/default
-sinclude vars/config
+sinclude .env
 
 export PATH := ./bin:$(PATH)
 export KUBECONFIG := .kube/config
 
-apply: apply/secrets apply/configmaps apply/daemonsets apply/roles
+apply: apply/configurations apply/definitions
 
-apply/daemonsets:
-	@/bin/bash scripts/apply_daemonset.sh
+apply/configurations:
+	@echo "Apply Configurations files"
+	@/bin/bash ./scripts/apply_configurations.sh
 
-apply/secrets:
-	@kubectl apply -f config/env/dev/secrets
-
-apply/configmaps:
-	@kubectl apply -f config/env/dev/configmaps
-
-apply/roles:
-	@for config in `ls config/roles`; do \
-		kubectl apply -f config/roles/$$config; \
-	done
+apply/definitions:
+	@echo "Apply Definitions files"
+	@/bin/bash ./scripts/apply_definitions.sh
 
 clean: clean/secrets
 
@@ -28,20 +21,13 @@ clean/secrets:
 	@echo "Delete secrets folders"
 	@/bin/bash ./scripts/clean_secrets.sh
 
-clean/roles:
-	@for config in `ls config/roles`; do \
-		kubectl delete -f config/roles/$$config; \
-	done
-
-clean/configmaps:
-	@kubectl clean -f config/env/dev/configmaps
-
 generate/secrets:
 	@for script in $$(find ./scripts/secrets_generator -name '*.sh'); do \
 		echo $$script; \
 		/bin/bash $$script; \
 	done
 	@/bin/bash  ./scripts/encrypt_secrets.sh
+	@/bin/bash ./scripts/clean_secrets.sh
 
 init: init/secrets init/kubectl/ssh
 
