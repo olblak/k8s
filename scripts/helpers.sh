@@ -18,9 +18,11 @@ function init_secret_file {
     echo "$SECRET_FILE"
 }
 
-if [ -f .env ];  then
+source k8s.default
+
+if [ -f k8s.cfg ];  then
     # shellcheck disable=SC1091
-    source .env
+    source k8s.cfg
 fi
 
 : "${CONFIGURATIONS_PATH:=./configurations/$ENV/}"

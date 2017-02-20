@@ -1,0 +1,3 @@
+PREFIX=jenkinsci
+LOCATION=eastus
+ENV=staging
