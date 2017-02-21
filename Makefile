@@ -45,7 +45,7 @@ status:
 	@kubectl get pods --all-namespaces
 
 get/endpoint:
-	@kubectl get service --namespace nginx-ingress | grep nginx
+	@/bin/bash -c 'source scripts/helpers.sh && get_public_ip'
 
 # Disable test as they are broken
 #test:

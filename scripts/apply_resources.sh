@@ -52,7 +52,7 @@ function check_resources_directory {
 # Show warning if other environment have less configuration than current one
 
 function check_configurations_files_nbr {
-    echo "Ensure that $ENV have enough configurations files"
+    echo "Verifying that $ENV have enough configurations files"
     ENV_NBR=$(find "$CONFIGURATIONS_PATH" -mindepth 1 -maxdepth 2 -type f -name '*.yaml'| wc -l)
     CONSISTENT=0
     while read -r environment; do 
@@ -108,6 +108,7 @@ while [[ $# -gt 0 ]]; do
             RESOURCES_PATH="$DEFINITIONS_PATH"
             check_resources_directory
             run
+            get_public_ip
             exit 0
         ;;
         "--all"|"-a")
@@ -118,6 +119,7 @@ while [[ $# -gt 0 ]]; do
             RESOURCES_PATH="$DEFINITIONS_PATH"
             check_resources_directory
             run
+            get_public_ip
             exit 0
         ;;
         *)
