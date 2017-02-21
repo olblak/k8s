@@ -57,3 +57,5 @@ Once good, execute following commands
     make apply  # Apply kubernetes configurations
     make clean  # Delete unencrypted secret files
 ```
+
+__More documentations can be found in doc directory [doc](doc/README.adoc)__
