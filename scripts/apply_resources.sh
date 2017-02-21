@@ -63,6 +63,7 @@ function check_configurations_files_nbr {
                 CONSISTENT=1
                 echo "ERROR: Compare to $NAME: $ENV is missing $(( NBR - ENV_NBR )) configurations ($ENV_NBR vs $NBR)"
                 echo $((NBR-ENV_NBR))
+                diff "$CONFIGURATIONS_PATH" "$environment"
             elif [ "$ENV_NBR" -gt "$NBR" ]; then
                 echo "WARNING: Compare to $ENV: $NAME is missing $(( ENV_NBR - NBR )) configurations"
             fi
