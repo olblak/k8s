@@ -10,11 +10,11 @@ apply: apply/configurations apply/definitions
 
 apply/configurations:
 	@echo "Apply Configurations files"
-	@/bin/bash ./scripts/apply_configurations.sh
+	@/bin/bash ./scripts/apply_resources.sh -c
 
 apply/definitions:
 	@echo "Apply Definitions files"
-	@/bin/bash ./scripts/apply_definitions.sh
+	@/bin/bash ./scripts/apply_resources.sh -d
 
 clean: clean/secrets
 
