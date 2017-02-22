@@ -6,7 +6,7 @@ sinclude k8s.cfg
 export PATH := ./bin:$(PATH)
 export KUBECONFIG := .kube/config
 
-apply: apply/configurations apply/definitions
+apply: apply/systems apply/configurations apply/definitions
 
 apply/configurations:
 	@echo "Apply Configurations files"
@@ -15,6 +15,10 @@ apply/configurations:
 apply/definitions:
 	@echo "Apply Definitions files"
 	@/bin/bash ./scripts/apply_resources.sh -d
+
+apply/systems:
+	@echo "Apply Definitions files"
+	@/bin/bash ./scripts/apply_resources.sh -s
 
 clean: clean/secrets
 

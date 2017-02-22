@@ -12,8 +12,8 @@ endif::[]
 
 == Description
 This project deploy and orchestrate jenkins-infra components on a Kubernetes infrastructure. +
-It contains two categories of definitions. +
-We define them as definitions and configurations.
+It contains three categories of definitions. +
+We define them as definitions, configurations and systems.
 
 1. Definitions: 
 
@@ -30,6 +30,10 @@ Configmap contain public key/value available for pods +
 
 IMPORTANT: . Secrets files must be encrypted on git and we must use the same gpg key for all encrypted files related to an environment. +
 . We can only deploy one environment per cluster at the moment.
+
+3. Systems
+Systems are resources that add core features to kubernetes like ingress.
+They must be deploy first, as other resources rely on them.
 
 There are two ways to use this project.
 

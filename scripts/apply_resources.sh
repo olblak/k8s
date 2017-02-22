@@ -98,6 +98,20 @@ fi
 while [[ $# -gt 0 ]]; do
     arg="$1"
     case $arg in
+        "--all"|"-a")
+            RESOURCES_PATH="$SYSTEMS_PATH"
+            check_resources_directory
+            run
+            RESOURCES_PATH="$CONFIGURATIONS_PATH"
+            check_configurations_files_nbr
+            check_resources_directory
+            run
+            RESOURCES_PATH="$DEFINITIONS_PATH"
+            check_resources_directory
+            run
+            get_public_ip
+            exit 0
+        ;;
         "--configurations"|"-c")
             RESOURCES_PATH="$CONFIGURATIONS_PATH"
             check_configurations_files_nbr
@@ -112,15 +126,10 @@ while [[ $# -gt 0 ]]; do
             get_public_ip
             exit 0
         ;;
-        "--all"|"-a")
-            RESOURCES_PATH="$CONFIGURATIONS_PATH"
-            check_configurations_files_nbr
+        "--systems"|"-s")
+            RESOURCES_PATH="$SYSTEMS_PATH"
             check_resources_directory
             run
-            RESOURCES_PATH="$DEFINITIONS_PATH"
-            check_resources_directory
-            run
-            get_public_ip
             exit 0
         ;;
         *)

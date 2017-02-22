@@ -4,5 +4,6 @@
 : "${LOCATION:=eastus}"
 : "${ENV:=staging}"
 # Following keys should not be override
-: "${CONFIGURATIONS_PATH:=./configurations/$ENV/}"
-: "${DEFINITIONS_PATH:=./definitions}"
+: "${CONFIGURATIONS_PATH:=./resources/configurations/$ENV/}"
+: "${DEFINITIONS_PATH:=./resources/definitions}"
+: "${SYSTEMS_PATH:=./resources/systems}"

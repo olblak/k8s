@@ -1,11 +1,13 @@
-.env
 *.swp
 .kube
-configurations/**/**/secrets.yaml
-configurations/**/**/secret.yaml
+*secrets.yaml
+*secret.yaml
 k8s.cfg
 
 #Obsolete
 config/secrets
 config/env/**/secrets/*yaml
+configurations/**/**/secrets.yaml
+configurations/**/**/secret.yaml
 vars/config.sh
+.env
