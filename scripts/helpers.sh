@@ -22,7 +22,7 @@ function get_public_ip {
     DNS_RECORDS=''
     while read -r line; do
         DNS_RECORDS="$(grep 'host:' "$line" | awk '{print $3}') $DNS_RECORDS"
-    done < <(find . -name 'ingress-tls.yaml')
+    done < <(find "$CONFIGURATIONS_PATH" -name 'ingress-tls.yaml')
     printf "\nHostname:\n%s\n\nmust be redirected to \n\t %s\n\n" \
         "$DNS_RECORDS" \
 		"$(kubectl get service nginx --namespace nginx-ingress -o jsonpath='{.status.loadBalancer.ingress[*].ip}')"
