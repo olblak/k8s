@@ -19,7 +19,7 @@ spec:
         backend:
           serviceName: plugins-jenkins
           servicePort: 5000
-  - host: api.plugins.jenkins.com
+  - host: api.plugins.jenkins.io
     http:
       paths:
       - path: /
