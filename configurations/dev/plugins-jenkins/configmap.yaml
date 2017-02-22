@@ -1,7 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-    name: plugins-jenkins
-data:
-    plugins.jenkins.api.url: "https://api.plugins.jenkins.io"
-    plugins.jenkins.data.file.url: "https://ci.jenkins.io/job/Infra/job/plugin-site-api/job/generate-data/lastSuccessfulBuild/artifact/plugins.json.gzip"
