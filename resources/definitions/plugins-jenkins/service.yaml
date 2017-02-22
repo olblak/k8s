@@ -4,7 +4,7 @@ kind: Service
 metadata:
   name: plugins-jenkins
   labels:
-    app: plugin-jenkins
+    app: plugins-jenkins
     type: plugins-jenkins
     logtype: archive
 spec:

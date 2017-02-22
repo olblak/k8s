@@ -8,6 +8,7 @@ spec:
             labels:
                 app: fluentd
                 logtype: archive
+                secret-azure-secret: linked
             name: fluentd
         spec:
             containers:

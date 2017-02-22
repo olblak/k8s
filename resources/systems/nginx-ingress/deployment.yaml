@@ -9,6 +9,8 @@ spec:
     metadata:
       labels:
         app: nginx
+        logtype: archive
+        configmap-nginx-ingress: linked
     spec:
       containers:
       - image: gcr.io/google_containers/nginx-ingress-controller:0.8.3

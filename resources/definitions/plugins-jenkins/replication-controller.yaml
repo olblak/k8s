@@ -4,9 +4,10 @@ kind: ReplicationController
 metadata:
     name: plugins-jenkins
     labels:
-        app: plugin-jenkins
+        app: plugins-jenkins
         type: plugins-jenkins
         logtype: archive
+        configmap-plugins-jenking: linked
 spec:
     replicas: 1
     template:

@@ -9,6 +9,8 @@ spec:
     metadata:
       labels:
         app: kube-lego
+        configmap-kube-lego: linked
+        logtype: archive
     spec:
       containers:
       - name: kube-lego

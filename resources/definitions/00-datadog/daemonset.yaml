@@ -8,6 +8,7 @@ spec:
       labels:
         app: datadog
         logtype: archive
+        secret-datadog: linked
       name: datadog
     spec:
       containers:
