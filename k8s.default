@@ -1,4 +1,12 @@
 #!/bin/bash
+#
+# ! Only define variables with following syntax here
+# As it means 'if variable is empty or set to null.' assign this default value
+# If you want to set a differant  value for you project, use k8s.cfg with key=value syntax
+# like
+# PREFIX=jenkinsci
+# LOCATION=eastus
+# ENV=staging
 
 : "${PREFIX:=jenkinsci}"
 : "${LOCATION:=eastus}"
