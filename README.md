@@ -5,10 +5,10 @@ This repository collect and apply kubernetes configuration files for jenkins-inf
 A makefile is provided to execute following common tasks.
 
 ```
-* make init         Create secrets configuration files
-* make apply        Apply Kubernetes configurations 
-* make clean        Remove secrets conriguration files
-* make status       Print all pods on kubernetes cluster
+* make init         # Create kubectl configuration with ssh and create secrets configuration files
+* make apply        # Apply Kubernetes configurations 
+* make clean        # Remove secrets conriguration files
+* make status       # Print all pods on kubernetes cluster
 ```
 There are two ways to use this project.
 
@@ -25,10 +25,13 @@ There are two ways to use this project.
 
 * If necessary override key/value defined in k8s.default into k8s.cfg
 
-Once good, execute following commands
+__! You will deploy on cluster ${PREFIX}mgmt.${LOCATION}.cloudapp.azure.com__
+__! Require ssh access to azureuser@${PREFIX}mgmt.${LOCATION}.cloudapp.azure.com__
+
+Once done, execute following commands
 
 ```
-    make init   # Decrypt secret files
+    make init   # Create kubectl configuration with ssh and create secrets configuration files
     make apply  # Apply kubernetes configurations
     make clean  # Delete unencrypted secret files
 ```
@@ -49,7 +52,10 @@ Once good, execute following commands
     DATADOG_API_KEY=value
   ```
 
-Once good, execute following commands
+__! You will deploy on cluster ${PREFIX}mgmt.${LOCATION}.cloudapp.azure.com__
+__! Require ssh access to azureuser@${PREFIX}mgmt.${LOCATION}.cloudapp.azure.com__
+
+Once done, execute following commands
 
 ```
     make generate/secrets # Browse scripts in scripts/secrets_generator/ to create secrets
