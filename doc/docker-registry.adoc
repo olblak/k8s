@@ -1,0 +1,59 @@
+According documentation we have two differents way to inject docker registry secret
+
+Documentation:
+Using a private registry  https://kubernetes.io/docs/user-guide/images/#using-a-private-registry[here] +
+Specifying image pulls secrets on pod https://kubernetes.io/docs/user-guide/images/#specifying-imagepullsecrets-on-a-pod[here] +
+Kubectl create secret docker registry https://kubernetes.io/docs/user-guide/kubectl/kubectl_create_secret_docker-registry/[here] +
+
+=== 1. Using kubectl command  
+Easiest way, we only have to create a Makefile task that run kubeclt with following informations +
+REGISTRY_USER | REGISTRY_PASSWORD | REGISTRY_EMAIL | REGISTRY_URL
+
+* Pros:
+** Easy to do
+
+* Cons:
+** Only work for one private registry
+** We must provide those credentials to each 'person' who needs to configure a private-registry on kubernetes
+
+
+=== 2. Create and publish a secret file on git repository
+
+* Pros:
+** Work for multiple registry
+** We generate once a file and we reuse it
+** Easiest to share credentials as we already encrypt others secrets
+** Keep track changes in git history
+
+* Cons:
+** File to create and maintain vs simple command
+
+IMPORTANT: Keep in mind that base64 value can be easily decoded with following command: ```echo -n '$SECRET' | base64 -d```
+
+
+=== Conclusion
+I propose the file way.
+
+1. Add following variables to k8s.cfg +
+
+    # Docker Registry Credentials
+    DOCKER_USER=<username>
+    DOCKER_PASSWORD=<password> 
+    DOCKER_EMAIL=<email>
+    DOCKER_REGISTRY_SERVER=<docker registry url>
+
+2. Ensure all  PODS, daemonset,... that use private registry, have following config 'imagePullSecrets'
+
+    \\ deployment.yaml
+    image: <DOCKER_REGISTRY_SERVER value>/my_image
+    imagePullSecrets:
+        - name: <DOCKER_REGISTRY_SERVER value>
+
+3. Apply with following commands
+
+    # Generate secret vault files
+    make generate/secrets
+    # Decrypt secret vault files
+    make init/secrets
+    # Apply kubernetes configuration files
+    make apply

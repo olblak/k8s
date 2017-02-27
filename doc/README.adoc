@@ -15,10 +15,10 @@ This project deploy and orchestrate jenkins-infra components on a Kubernetes inf
 It contains three categories of definitions. +
 We define them as definitions, configurations and systems.
 
-1. Definitions: 
+1. Definitions:
 
 Definitions are common resources to all environments, they are services, daemonsets, pods version,... +
-Everything that is not specific to an environment 
+Everything that is not specific to an environment
 
 2. Configuration:
 
@@ -43,7 +43,7 @@ It's the easiest scenario where you mainly need kubectl and the key to unencrypt
 Either we create a new one. +
 It ask more requirements as you gonna have to create configmaps, and secrets files. +
 You will also need all tools to get secrets key/value. +
-For example azure-client to retrieve azure disk storage keys. 
+For example azure-client to retrieve azure disk storage keys.
 
 == Requirements
 In order to use this project, you gonna need following tools.
@@ -56,7 +56,7 @@ They are explains in Variables section
 
 === Kubectl
 
-In order to apply kubernetes files, you gonna need 
+In order to apply kubernetes files, you gonna need
 'kubectl' installed and correctly configured. +
 A version of kubectl is provided in bin folder.
 You can use one of the following method to configure it.
@@ -66,11 +66,11 @@ Require ssh access to kubernetes cluster with user azureuser.
 
 Run: ```make init/kubectl/ssh```
 
-===== 2. Azure Cli 
+===== 2. Azure Cli
 Require azure-cli correctly configured and a ssh access
 It may be easier to use the ssh method as you don't need azure-cli
 
-Run: ```make init/kubectl/ssh```  
+Run: ```make init/kubectl/ssh``` 
 
 == Jenkinsfile
 In order to run this project through Jenkins, we need to configure two credentials.
@@ -79,7 +79,7 @@ In order to run this project through Jenkins, we need to configure two credentia
 2. A text credential with id 'k8s-vault-password' which contain $VAULT_PASSWORD to decrypt gpg files
 
 IMPORTANT: Environment defined by $ENV will be deploy on ${PREFIX}mgmt.${LOCATION}.cloudapp.azure.com.+
-Therefor ensure that ENV, PREFIX, LOCATION correspond to what you need. 
+Therefor ensure that ENV, PREFIX, LOCATION correspond to what you need.
 Defaults values are defined in k8s.default
 
 == Variables
@@ -110,22 +110,22 @@ All variables are explained below
 
 | PREFIX
 | jenkinsci
-| v 
+| v
 | In combination with LOCATION, use to know on which azure cluster we want to deploy/orchestrate k8s project
 
 | LOCATION
 | eastus
-| v 
+| v
 | In combination with PREFIX, use to know on which azure cluster we want to deploy/orchestrate  k8s project
 
 | ENV
 | staging
-| v 
+| v
 | Use to define which $ENV we want to deploy/orchestrated.
 
 | VAULT_PASSWORD
 | x
-| Required if some secrets need to be decrypted 
+| Required if some secrets need to be decrypted
 | Use to decrypt gpg secrets files under ./config/$ENV/secrets
 
 |===
@@ -135,8 +135,13 @@ All variables are explained below
 |===
 | Variables
 | Default value
-| Mandatory 
+| Mandatory
 | Description
+
+| AZURE_ARCHIVE_CONTAINER
+| k8slogs
+| Default value
+| Used by fluentd plugins to know on which container send logs
 
 | STORAGE_ACCOUNT_NAME
 | Defined by azure-cli
@@ -150,7 +155,7 @@ All variables are explained below
 
 | STORAGE_ACCOUNT_LOGS_KEY
 | x
-| v (cfr doc folder) 
+| v (cfr doc folder)
 | Used by fluentd-plugin-loganalytics
 
 | AZURE_OMS_CUSTOMER_ID
@@ -160,8 +165,31 @@ All variables are explained below
 
 | DATADOG_API_KEY
 | x
-| v 
+| v
 | Used to send collected data to datadog
+
+| DOCKER_REGISTRY_SERVER
+| x
+| v
+| Used to generate docker registry secret file
+
+
+| DOCKER_USER
+| x
+| v
+| Used to generate docker registry secret file
+
+
+| DOCKER_PASSWORD
+| x
+| v
+| Used to generate docker registry secret file
+
+| DOCKER_EMAIL
+| x
+| v
+| Used to generate docker registry secret file
+
 
 |===
 
