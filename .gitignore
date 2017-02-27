@@ -3,6 +3,7 @@
 *secrets.yaml
 *secret.yaml
 k8s.cfg
+.bin
 
 #Obsolete
 config/secrets
