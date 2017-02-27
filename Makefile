@@ -3,7 +3,7 @@
 include k8s.default
 sinclude k8s.cfg
 
-export PATH := ./bin:$(PATH)
+export PATH := ./.bin:$(PATH)
 export KUBECONFIG := .kube/config
 
 apply: apply/systems apply/configurations apply/definitions
@@ -34,11 +34,15 @@ generate/secrets:
 	@/bin/bash  ./scripts/encrypt_secrets.sh
 	@/bin/bash ./scripts/clean_secrets.sh
 
-init: init/secrets init/kubectl/ssh
+init: init/secrets init/kubectl init/kubectl/ssh
 
 init/secrets:
 	/bin/bash  ./scripts/decrypt_secrets.sh
 
+init/kubectl:
+	if [ ! -d .bin ]; then mkdir .bin; fi
+	@curl -L https://storage.googleapis.com/kubernetes-release/release/$$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl -o ./.bin/kubectl
+	@chmod +x ./.bin/kubectl
 init/kubectl/azure:
 	@/bin/bash ./scripts/init_kubectl.sh azure
 
