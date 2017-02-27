@@ -1,8 +1,5 @@
 .PHONY: *
 
-include k8s.default
-sinclude k8s.cfg
-
 export PATH := ./.bin:$(PATH)
 export KUBECONFIG := .kube/config
 
