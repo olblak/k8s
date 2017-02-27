@@ -20,11 +20,18 @@ apply/systems:
 	@echo "Apply Definitions files"
 	@/bin/bash ./scripts/apply_resources.sh -s
 
-clean: clean/secrets
+clean: clean/secrets clean/trash
 
 clean/secrets:
 	@echo "Delete secrets folders"
 	@/bin/bash ./scripts/clean_secrets.sh
+
+clean/trash:
+	@if [ $$( ls resources/trash | wc -l) -gt '0' ]; then \
+		kubectl delete -f resources/trash --ignore-not-found=true -R -o name 2>/dev/null; \
+		else \
+		echo "Nothing to clean"; \
+	 fi
 
 generate/secrets:
 	@for script in $$(find ./scripts/secrets_generator -name '*.sh'); do \
@@ -64,3 +71,5 @@ get/endpoint:
 
 proxy:
 	@kubectl proxy
+
+
