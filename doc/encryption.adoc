@@ -1,0 +1,14 @@
+=== Encryption
+We use gpg keys to encrypt/decrypt kubernetes secret +
+In order to be able to automate this process we must define some rules. +
+
+* We use one certificate per environment.
+* All environment's certificates follow the same pattern
+** Kind of key: 'RSA and RSA'
+** Size: 4096
+** Key validity: 0
+** Real Name: <environment>-jenkinsinfra-k8s 
+** Email: infra@lists.jenkins-ci.org
+** Comment: GPG key use to encrypt <environment> secrets for k8s
+* Public keys are exported in configurations/<environment>/public.key and published on git +
+    ``gpg --export --armor <environment>-jenkinsinfra-k8s > ./resources/configurations/<environment>/public.key``

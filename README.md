@@ -17,11 +17,7 @@ There are two ways to use this project.
 
 ## Deploy existing environment
 
-! Require an existing azure environment
-
-* Add in k8s.cfg 
-
-    ```VAULT_PASSWORD=<password to decrypt ./configurations/$ENV/**/.gpg>```
+! Require an existing azure environment and associated private key in order to decrypt gpg files
 
 * If necessary override key/value defined in k8s.default into k8s.cfg
 
@@ -42,7 +38,6 @@ Once done, execute following commands
 
 * Add in k8s.cfg
 
-    ```VAULT_PASSWORD=<password to [de|enc]crypt ./configurations/$ENV/**/.gpg>```
 * If necessary override key/value defined in k8s.default into k8s.cfg
 * Add all key/value needed to generate secrets
   They are explained in table2.Secrets from doc/README.adoc
@@ -69,7 +64,7 @@ __More documentations can be found in doc directory [doc](doc/README.adoc)__
 ## Concernes
 
 Even if Kubernetes is a great tool, it also have missing features that must be knowned  
-and some workarounds founded   
+and workarounds founded   
 Keep in mind that those missing features may be implemented in a near futur but we need solutions for today. 
 
 ### Kubernetes Resources
@@ -100,7 +95,7 @@ Suggestions:
   secret-<secret_name>: linked
   Each time we update a secret resource, we search for all pods with label secret-<secret_name> = linked
   And we recreate them.  
-  Which is the solution implemented in scripts right now but it introduce down time
+  Which is the solution implemented in scripts right now
 3. We need to find a way to do safe rolling update, at the moment we only delete/create pods
 
 #### ConfigMap

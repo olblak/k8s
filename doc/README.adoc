@@ -15,13 +15,11 @@ This project deploy and orchestrate jenkins-infra components on a Kubernetes inf
 It contains three categories of definitions. +
 We define them as definitions, configurations and systems.
 
-1. Definitions:
-
+==== Definitions:
 Definitions are common resources to all environments, they are services, daemonsets, pods version,... +
 Everything that is not specific to an environment
 
-2. Configuration:
-
+==== Configuration:
 Configuration are resources specific to an environment. +
 They are complementary with definitions. +
 They are secrets or configmaps use to differentiate infrastructure components between environments (dev,staging,production,...). +
@@ -31,7 +29,7 @@ Configmap contain public key/value available for pods +
 IMPORTANT: . Secrets files must be encrypted on git and we must use the same gpg key for all encrypted files related to an environment. +
 . We can only deploy one environment per cluster at the moment.
 
-3. Systems
+==== Systems
 Systems are resources that add core features to kubernetes like ingress.
 They must be deploy first, as other resources rely on them.
 
@@ -44,6 +42,10 @@ Either we create a new one. +
 It ask more requirements as you gonna have to create configmaps, and secrets files. +
 You will also need all tools to get secrets key/value. +
 For example azure-client to retrieve azure disk storage keys.
+
+==== Trash
+Trash are ressources that will be remove from cluster.
+At the moment, this is the only way to remove cluster ressources
 
 == Requirements
 In order to use this project, you gonna need following tools.
@@ -59,7 +61,8 @@ They are explains in Variables section
 In order to apply kubernetes files, you gonna need
 'kubectl' installed and correctly configured. +
 A version of kubectl is provided in bin folder.
-You can use one of the following method to configure it.
+You can use one of the following method to configure it. + 
+   ``make init/kubectl``
 
 ===== 1. Ssh (Prefered method)
 Require ssh access to kubernetes cluster with user azureuser.
@@ -76,11 +79,17 @@ Run: ```make init/kubectl/ssh```
 In order to run this project through Jenkins, we need to configure two credentials.
 
 1. An ssh key that have access to azureuser@kubernetes_cluster with credentials_id 'ssh-k8s'
-2. A text credential with id 'k8s-vault-password' which contain $VAULT_PASSWORD to decrypt gpg files
+2. A Private key to unencrypt secret files
 
 IMPORTANT: Environment defined by $ENV will be deploy on ${PREFIX}mgmt.${LOCATION}.cloudapp.azure.com.+
 Therefor ensure that ENV, PREFIX, LOCATION correspond to what you need.
 Defaults values are defined in k8s.default
+
+== Secret Management
+include::encryption.adoc[Secret Management documentation]
+
+== Docker Registry
+include::docker-registry.adoc[Docker Registry documentation]
 
 == Variables
 === Description
@@ -122,11 +131,6 @@ All variables are explained below
 | staging
 | v
 | Use to define which $ENV we want to deploy/orchestrated.
-
-| VAULT_PASSWORD
-| x
-| Required if some secrets need to be decrypted
-| Use to decrypt gpg secrets files under ./config/$ENV/secrets
 
 |===
 
@@ -194,4 +198,4 @@ All variables are explained below
 |===
 
 Remarks:
-This project is a good demonstration of continuous delivery through Jenkins.
+This project is a good experience of continuous delivery through Jenkins.
