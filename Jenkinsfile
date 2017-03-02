@@ -5,25 +5,13 @@
  */
 @Library('pipeline-library@master') _
 
-if (env.CHANGE_ID) {
-    properties([
-        buildDiscarder(logRotator(numToKeepStr: '10')),
-        parameters([
-            [$class: 'CredentialsParameterDefinition', credentialType: 'com.cloudbees.plugins.credentials.impl.CertificateCredentialsImpl', defaultValue: 'production-jenkinsinfra-k8s', description: '', name: '', required: true]
-        ])
-    ])  
-}
-else {
-    properties([
-        buildDiscarder(logRotator(numToKeepStr: '96')),
-        pipelineTriggers([[$class:"SCMTrigger", scmpoll_spec:"H/10 * * * *"]]),
-        parameters([
-            [$class: 'CredentialsParameterDefinition', credentialType: 'com.cloudbees.plugins.credentials.impl.CertificateCredentialsImpl', defaultValue: 'sandbox-jenkinsinfra-k8s', description: '', name: '', required: true]
-        ])
-    ])  
-}
+properties([
+    buildDiscarder(logRotator(numToKeepStr: '96')),
+    pipelineTriggers([[$class:"SCMTrigger", scmpoll_spec:"H/10 * * * *"]]),
+])
 
 String sshk8skey
+
 /* Depending on environment, adjust k8s cluster settings */
 if (infra.isTrusted()) {
     env.PREFIX='prod'
@@ -37,7 +25,7 @@ else {
     env.PREFIX='jenkinsci'
     env.ENV='sandbox'
     env.LOCATION='eastus'
-    sshk8skey='ssh-k8s'
+    sshk8skey='staging-ssh-k8s'
 }
 
 try {
