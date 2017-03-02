@@ -15,3 +15,5 @@
 : "${CONFIGURATIONS_PATH:=./resources/configurations/$ENV/}"
 : "${DEFINITIONS_PATH:=./resources/definitions}"
 : "${SYSTEMS_PATH:=./resources/systems}"
+
+: "${DOCKER_EMAIL:='jenkins-infra@lists.jenkins-ci.org'}"
