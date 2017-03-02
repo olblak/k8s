@@ -55,7 +55,7 @@ try {
         node{
             deleteDir()
             unstash 'k8s-init'
-            sh 'make deploy'
+            sh 'make apply'
         }
     }
 }
