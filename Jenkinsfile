@@ -20,11 +20,9 @@ if (infra.isTrusted()) {
     sshk8skey='production-ssh-k8s'
 }
 else {
-    /* env.PREFIX='infraci' */
-    /* env.ENV='staging' */
-    env.PREFIX='jenkinsci'
-    env.ENV='sandbox'
-    env.LOCATION='eastus'
+    env.PREFIX='infraci'
+    env.ENV='staging'
+    nv.LOCATION='eastus'
     sshk8skey='staging-ssh-k8s'
 }
 
