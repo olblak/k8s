@@ -17,10 +17,10 @@ spec:
                   name: fluentd
                   resources:
                     requests:
-                        memory: "350Mi"
+                        memory: "700Mi"
                         cpu: "0.1"
                     limits:
-                        memory: "400Mi"
+                        memory: "1400Mi"
                         cpu: "0.2"
                   env:
                     - name: AZURE_WORKSPACE_ID
