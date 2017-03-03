@@ -41,33 +41,6 @@ function check_resources_directory {
     fi
 }
 
-# Check if the environment that we deploy do not miss configurations files
-# Show error if current environment have less configuration files than others
-# Show warning if other environment have less configuration than current one
-
-function check_configurations_files_nbr {
-    echo "Verifying that $ENV have enough configurations files"
-    ENV_NBR=$(find "$CONFIGURATIONS_PATH" -mindepth 1 -maxdepth 2 -type f -name '*.yaml'| wc -l)
-    CONSISTENT=0
-    while read -r environment; do 
-        if [[ "$CONFIGURATIONS_PATH" != "${environment}/" ]]; then
-            NAME=$(basename "$environment")
-            NBR=$(find "$environment" -mindepth 1 -maxdepth 2 -type f -name '*.yaml' | wc -l)
-            if [ "$ENV_NBR" -lt "$NBR" ]; then 
-                CONSISTENT=1
-                echo "ERROR: Compare to $NAME: $ENV is missing $(( NBR - ENV_NBR )) configurations ($ENV_NBR vs $NBR)"
-                echo $((NBR-ENV_NBR))
-                diff "$CONFIGURATIONS_PATH" "$environment"
-            elif [ "$ENV_NBR" -gt "$NBR" ]; then
-                echo "WARNING: Compare to $ENV: $NAME is missing $(( ENV_NBR - NBR )) configurations"
-            fi
-        fi
-    done < <(find "$(dirname "$CONFIGURATIONS_PATH")" -mindepth 1 -maxdepth 1 -type d)
-
-    if [[ $CONSISTENT -eq 1 ]]; then
-        exit 1
-    fi
-}
 
 # Check if secret or configmap changed, if so restart all pods with label app=$NAME
 function apply_config {
@@ -116,7 +89,6 @@ while [[ $# -gt 0 ]]; do
             check_resources_directory
             run
             RESOURCES_PATH="$CONFIGURATIONS_PATH"
-            check_configurations_files_nbr
             check_resources_directory
             run
             RESOURCES_PATH="$DEFINITIONS_PATH"
@@ -127,7 +99,6 @@ while [[ $# -gt 0 ]]; do
         ;;
         "--configurations"|"-c")
             RESOURCES_PATH="$CONFIGURATIONS_PATH"
-            check_configurations_files_nbr
             check_resources_directory
             run
             exit 0

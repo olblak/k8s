@@ -1,0 +1,62 @@
+# List of files that need to be checked
+# find . -type f ! -path './.git/*' ! -name '*.swp' ! -name '.gitignore' ! -path './.kube/*' ! -path './.bin/*' ! -name 'k8s.cfg' ! -path './resources/configurations/*' | sort'
+# Remark configurations are define in CONFIGURATION_FILES
+
+FILES="\
+    ./BATTLEPLAN.md \
+    ./Jenkinsfile \
+    ./Makefile \
+    ./NOTES.md \
+    ./README.md \
+    ./doc/README.adoc \
+    ./doc/docker-registry.adoc \
+    ./doc/enable_azure_custom_logs.png \
+    ./doc/encryption.adoc \
+    ./doc/get_azure_OMS_credentials.png \
+    ./doc/gpg_keys.adoc \
+    ./k8s.default \
+    ./resources/definitions/00-datadog/daemonset.yaml \
+    ./resources/definitions/00-fluentd/daemonset.yaml \
+    ./resources/definitions/plugins-jenkins/deployment.yaml \
+    ./resources/definitions/plugins-jenkins/service.yaml \
+    ./resources/systems/lego/00-namespace.yaml \
+    ./resources/systems/lego/configmap.yaml \
+    ./resources/systems/lego/deployment.yaml \
+    ./resources/systems/nginx-ingress/00-namespace.yaml \
+    ./resources/systems/nginx-ingress/configmap.yaml \
+    ./resources/systems/nginx-ingress/default-deployment.yaml \
+    ./resources/systems/nginx-ingress/default-service.yaml \
+    ./resources/systems/nginx-ingress/deployment.yaml \
+    ./resources/systems/nginx-ingress/service.yaml \
+    ./resources/trash/azure-secret-1.yaml \
+    ./resources/trash/rc-plugins-jenkins.yaml \
+    ./scripts/apply_resources.sh \
+    ./scripts/clean_secrets.sh \
+    ./scripts/decrypt_secrets.sh \
+    ./scripts/encrypt_secrets.sh \
+    ./scripts/helpers.sh \
+    ./scripts/init_kubectl.sh \
+    ./scripts/secrets_generator/azure.sh \
+    ./scripts/secrets_generator/datadog.sh \
+    ./scripts/secrets_generator/docker-registry.sh \
+    ./scripts/secrets_generator/templates/azure-secret.yaml \
+    ./scripts/secrets_generator/templates/datadog.yaml \
+    ./scripts/secrets_generator/templates/docker-registry.yaml \
+    ./scripts/tests.sh \
+    ./tests/lib/directory.bats \
+    ./tests/lib/file.bats \
+    ./tests/lib/scripts.bats \
+    ./tests/lib/variables.bats \
+    ./tests/vars/directories \
+    ./tests/vars/files \
+"
+# List configuration files
+#
+CONFIGURATION_FILES="
+	resources/configurations/$TEST_ENV/datadog/secret.gpg
+	resources/configurations/$TEST_ENV/azure-secret/secret.gpg
+	resources/configurations/$TEST_ENV/public.key
+	resources/configurations/$TEST_ENV/docker-registry/secret.gpg
+	resources/configurations/$TEST_ENV/plugins-jenkins/configmap.yaml
+	resources/configurations/$TEST_ENV/plugins-jenkins/ingress-tls.yaml
+"

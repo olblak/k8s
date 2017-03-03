@@ -60,13 +60,8 @@ get/endpoint:
 	@/bin/bash -c 'source scripts/helpers.sh && get_public_ip'
 
 # Disable test as they are broken
-#test:
-#	@for scenario in `ls tests/bats`; do \
-#		echo "Execute: $$scenario"; \
-#		bats tests/bats/$$scenario; \
-#	done
+test:
+	@/bin/bash ./scripts/tests.sh
 
 proxy:
 	@kubectl proxy
-
-

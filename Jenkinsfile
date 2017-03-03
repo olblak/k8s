@@ -39,6 +39,15 @@ try {
             stash includes: '**', name: 'k8s-init'
         }
     }
+
+    stage('Test'){
+        node{
+            deleteDir()
+            unstash 'k8s-init'
+            sh 'make test'
+        }
+    }
+
     stage('Review') {
     /* Inside of a pull request or if executing a Multibranch Pipeline it
     * is acceptable to proceed without any review of the planned

@@ -1,0 +1,23 @@
+# List of files that need to be checked
+# find . -type d ! -path './.git*' ! -path './.bin' ! -path './.kube*' ! -name '.' ! -path './resources/configurations/*' | sort
+# We didn't want to automate values here as we want to manually check the content
+
+DIRECTORIES="\
+    ./doc \
+    ./resources \
+    ./resources/configurations \
+    ./resources/definitions \
+    ./resources/definitions/00-datadog \
+    ./resources/definitions/00-fluentd \
+    ./resources/definitions/plugins-jenkins \
+    ./resources/systems \
+    ./resources/systems/lego \
+    ./resources/systems/nginx-ingress \
+    ./resources/trash \
+    ./scripts \
+    ./scripts/secrets_generator \
+    ./scripts/secrets_generator/templates \
+    ./tests \
+    ./tests/lib \
+    ./tests/vars
+"
