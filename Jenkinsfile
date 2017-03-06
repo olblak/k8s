@@ -26,6 +26,8 @@ else {
     sshk8skey='staging-ssh-k8s'
 }
 
+Image.id='centos/7'
+
 try {
     stage('Init'){
         node{
@@ -42,7 +44,11 @@ try {
         node{
             deleteDir()
             unstash 'k8s-init'
-            sh 'make test'
+            Image.inside(){
+                yum update -y
+                yum install make bats
+                sh 'make test'
+            }
         }
     }
 
