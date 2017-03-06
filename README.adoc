@@ -19,7 +19,7 @@ endif::[]
 :Date: 03/03/2017
 
 = K8s: Orchestrator Project 
-:toc: right:
+:toc: right
 :toclevels: 3
 
 == Introduction
