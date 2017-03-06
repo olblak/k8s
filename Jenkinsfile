@@ -22,7 +22,7 @@ if (infra.isTrusted()) {
 else {
     env.PREFIX='infraci'
     env.ENV='staging'
-    nv.LOCATION='eastus'
+    env.LOCATION='eastus'
     sshk8skey='staging-ssh-k8s'
 }
 
