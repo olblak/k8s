@@ -127,11 +127,11 @@ In order to deploy this project into production we must execute following steps.
     username: 'azureuser'
     credential_id: 'production-ssh-k8s'
 
-* Generate Secrets 
-** Staging
+* Create Secrets 
+** For staging
 *** Edit 'k8s.cfg'
 
-.k8s.cfg
+    \\.k8s.cfg
     DATADOG_API_KEY=<insert_value here>
     STORAGE_ACCOUNT_LOGS_KEY=<insert_value here>
     DOCKER_REGISTRY_SERVER=<insert_value here>
@@ -146,10 +146,10 @@ In order to deploy this project into production we must execute following steps.
 
 TIP: Repeat the same operation for production.
 
-** Production
+** For production
 *** Edit k8s.cfg
 
-.k8s.cfg
+    \\.k8s.cfg
     DATADOG_API_KEY=<insert_value here>
     STORAGE_ACCOUNT_LOGS_KEY=<insert_value here>
     DOCKER_REGISTRY_SERVER=<insert_value here>
@@ -161,6 +161,8 @@ TIP: Repeat the same operation for production.
 *** Generate Secrets
 
     make generate/secrets
+
+IMPORTANT: Pay attention to not commit unencrypted secrets
 
 === Validation Criteria
 
@@ -195,7 +197,7 @@ Defaults values are defined in k8s.default
 == Docker Registry
 According documentation we have two differents ways to inject docker registry secret
 
-=== Method
+=== Methods
 ==== Kubectl  
 Easiest way, we only have to create a Makefile task that run kubeclt command with following informations +
 REGISTRY_USER | REGISTRY_PASSWORD | REGISTRY_EMAIL | REGISTRY_URL
