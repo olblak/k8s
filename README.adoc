@@ -6,8 +6,6 @@ ifdef::env-github[]
 :warning-caption: :warning:
 endif::[]
 
-
-
 :sectid!:
 :idprefix:
 :sectnums: 3
@@ -19,35 +17,468 @@ endif::[]
 :Date: 03/03/2017
 
 = K8s: Orchestrator Project 
-:toc: right
+:toc:
+:toc-placement: preamble
 :toclevels: 3
 
 == Introduction
-include::doc/introduction.adoc[Description]
+This project deploy and orchestrate jenkins-infra kubernetes project on azure cluster. +
+It contains three categories of resources. +
+We define them as definitions, configurations and systems.
 
 == Definition
-include::doc/definition.adoc[Definition]
+=== Definitions
+Definitions are common resources to all environments, they are services, daemonsets, pods version,... +
+Everything that is not specific to an environment
+
+=== Configuration
+Configuration are resources specific to an environment. +
+They are complementary with definitions. +
+They are secrets or configmaps used to differentiate infrastructure components between environments (dev,staging,production,...). +
+Secrets contain hidden key/value available for pods +
+Configmaps contain public key/value available for pods +
+
+IMPORTANT: . Secrets files must be encrypted on git and we must use the same gpg key for all encrypted files related to an environment. +
+. We can only deploy one environment per cluster at the moment.
+
+=== Systems
+Systems are resources that add core features to kubernetes like ingress.
+They must be deploy first, as other resources rely on them.
+
+There are two ways to use this project.
+
+Either we use an environment already defined.
+It's the easiest scenario where you mainly need kubectl and the public certificate to unencrypt secrets files.
+
+Either we create a new one (or update an existing one). +
+It asks more requirements as you gonna have to create configmaps and secrets files then encrypt them with public key. +
+You may also need tools to get secrets key/value. +
+For example azure-client to retrieve azure disk storage keys.
+
+=== Trash
+Trash are ressources that will be remove from cluster. +
+At the moment, this is the only way to remove cluster ressources
 
 == Requirements
-include::doc/requirements.adoc[Requirements]
+In order to use this project, you gonna need following tools.
+
+make | gpg | ssh | bats | kubectl
+
+N.B.: +
+Some additionals tools can be needed to generate specific secret files. +
+They are explains in Variables section
+
+=== Kubectl
+
+In order to apply kubernetes files, you gonna need
+'kubectl' installed and correctly configured. +
+'kubectl' can be downloaded in .bin folder with following command. +
+
+   make init/kubectl
+
+Once kubectl command available, you gonna need to configure it in order to connect to the good cluster.
+Both following commands copy the configuration file to .kube/config
+
+===== 1. Ssh (Prefered method)
+Require ssh access to kubernetes cluster with user azureuser.
+
+    make init/kubectl/ssh
+
+===== 2. Azure Cli
+Require azure-cli correctly configured and a ssh access
+It may be easier to use the ssh method as you don't need azure-cli
+
+     make init/kubectl/azure
 
 == Secret Management
-include::doc/encryption.adoc[Secret Management documentation]
+=== Encryption
+We use gpg keys to encrypt/decrypt kubernetes secret +
+In order to be able to automate this process we must define some rules. +
+
+* We use one certificate per environment.
+* All environment's certificates follow the same pattern
+** Kind of key: 'RSA and RSA'
+** Size: 4096
+** Key validity: 0
+** Real Name: <environment>-jenkinsinfra-k8s 
+** Email: infra@lists.jenkins-ci.org
+** Comment: GPG key use to encrypt <environment> secrets for jenkinsinfra/k8s
+* Public keys are exported in configurations/<environment>/public.key and published on git +
+    ``gpg --export --armor <environment>-jenkinsinfra-k8s > ./resources/configurations/<environment>/public.key``
 
 == Deployment
-include::doc/deployment.adoc[Production deployment]
+=== Description
+In order to deploy this project into production we must execute following steps.
+
+* Generate staging&production private/public keys
+* Export plublic keys to './resources/configurations/production/public.key'
+* Add ssh credentials to jenkins configuration
+** Staging
+
+    type: username/ssh
+    username: 'azureuser'
+    credential_id: 'staging-ssh-k8s'
+
+** Production
+
+    type: username/ssh
+    username: 'azureuser'
+    credential_id: 'production-ssh-k8s'
+
+* Generate Secrets 
+** Staging
+*** Edit 'k8s.cfg'
+
+.k8s.cfg
+    DATADOG_API_KEY=<insert_value here>
+    STORAGE_ACCOUNT_LOGS_KEY=<insert_value here>
+    DOCKER_REGISTRY_SERVER=<insert_value here>
+    DOCKER_USER=<insert_value here>
+    DOCKER_PASSWORD=<insert_value here>
+    DOCKER_EMAIL=<insert_value here>
+    ENV=staging
+
+*** Generate secrets
+
+    make generate/secrets
+
+TIP: Repeat the same operation for production.
+
+** Production
+*** Edit k8s.cfg
+
+.k8s.cfg
+    DATADOG_API_KEY=<insert_value here>
+    STORAGE_ACCOUNT_LOGS_KEY=<insert_value here>
+    DOCKER_REGISTRY_SERVER=<insert_value here>
+    DOCKER_USER=<insert_value here>
+    DOCKER_PASSWORD=<insert_value here>
+    DOCKER_EMAIL=<insert_value here>
+    ENV=production
+
+*** Generate Secrets
+
+    make generate/secrets
+
+=== Validation Criteria
+
+* Test passed
+* Staging is correctly deployed
+* Staging Fluentd correctly send logs to log analytics
+* Staging Fluentd correctly send logs to shared disk storage
+* Datadog receive data
+* Plugins-jenkins is joinable through his public IP 
+    
+    make get/endpoint
+
+* All production configurations are committed
+
+IMPORTANT: Once merged into master, production should be able to be deployed without any modifications
 
 == Jenkins
-include::doc/jenkins.adoc[Jenkins]
+In order to run this project through Jenkins, we need to configure at least two following things.
+
+* SSH access to kubernetes cluster (cfr deployment section)
+** Add ssh credential with id 'staging-ssh-k8s' for staging 
+** Add ssh credential with id 'production-ssh-k8s' for production 
+* Private key to unencrypt secrets.
+** Add private keys to jenkins node that run the project
+
+At the moment Jenkinsfile is only configured to deploy on production or staging +
+It may be interesting to use jenkins-infra/azure project to provision testing cluster
+
+IMPORTANT: Environment defined by $ENV will be deploy on ${PREFIX}mgmt.${LOCATION}.cloudapp.azure.com.+
+Defaults values are defined in k8s.default
 
 == Docker Registry
-include::doc/docker-registry.adoc[Docker Registry documentation]
+According documentation we have two differents ways to inject docker registry secret
 
-== Variables
-include::doc/variables.adoc[Variables]
+=== Method
+==== Kubectl  
+Easiest way, we only have to create a Makefile task that run kubeclt command with following informations +
+REGISTRY_USER | REGISTRY_PASSWORD | REGISTRY_EMAIL | REGISTRY_URL
+
+* Pros:
+** Easy to do
+
+* Cons:
+** Only work for one private registry
+** We must provide those credentials to each 'person' who needs to configure a private-registry on kubernetes
+
+
+==== Secret
+Create and publish kubernetes secret file
+
+* Pros:
+** Work for multiple registry
+** We generate once a file and we reuse it
+** Easiest to share credentials as we already encrypt others secrets
+** Can be committed to git
+** Keep track changes in git history
+
+* Cons:
+** File to create and maintain vs simple command
+
+IMPORTANT: Keep in mind that base64 value can be easily decoded with following command: ```echo -n '$SECRET' | base64 -d```
+
+
+=== Links:
+Using a private registry  https://kubernetes.io/docs/user-guide/images/#using-a-private-registry[here] +
+Specifying image pulls secrets on pod https://kubernetes.io/docs/user-guide/images/#specifying-imagepullsecrets-on-a-pod[here] +
+Kubectl create secret docker registry https://kubernetes.io/docs/user-guide/kubectl/kubectl_create_secret_docker-registry/[here] +
+
+=== Conclusion
+Using secret files seem to be better +
+So: 
+
+1. Add following variables to k8s.cfg +
+
+.k8s.cfg
+    # Docker Registry Credentials
+    DOCKER_USER=<username>
+    DOCKER_PASSWORD=<password> 
+    DOCKER_EMAIL=<email>
+    DOCKER_REGISTRY_SERVER=<docker registry url>
+
+2. Ensure that all PODS, daemonset,... that use private registry, have following configuration 'imagePullSecrets'
+
+    \\ deployment.yaml
+    image: <DOCKER_REGISTRY_SERVER value>/my_image
+    imagePullSecrets:
+        - name: <DOCKER_REGISTRY_SERVER value>
+
+3. Apply with following commands
+
+    # Generate secret vault files
+    make generate/secrets
+    # Decrypt secret vault files
+    make init/secrets
+    # Apply kubernetes configuration files
+    make apply
 
 == Makefile
-include::doc/makefile.adoc[Makefile]
+=== Description
+
+A makefile is provided to execute common tasks.
+
+[source,numbered]
+make init         # Create kubectl configuration with ssh and create secrets configuration files
+make apply        # Apply Kubernetes configurations 
+make clean        # Remove secrets conriguration files
+make status       # Print all pods on kubernetes cluster
+
+There are two ways to use this project.
+
+1. Deploy existing environment
+2. Create/Update an existing environment.
+
+==== Deploy existing environment
+
+! Require ssh access to an existing azure environment and a private key to decrypt secrets
+
+* If necessary override key/value defined in k8s.default into k8s.cfg
+
+__! You will deploy on cluster ${PREFIX}mgmt.${LOCATION}.cloudapp.azure.com__  
+__! Require ssh access to azureuser@${PREFIX}mgmt.${LOCATION}.cloudapp.azure.com__
+
+[source,numbered]
+make init   # Create kubectl configuration with ssh and create secrets configuration files
+make apply  # Apply kubernetes configurations
+make clean  # Delete unencrypted secret files
+
+==== Create/Update an environment
+
+! Require an existing azure environment
+
+* Add in k8s.cfg
+
+* If necessary override key/value defined in k8s.default into k8s.cfg
+* Add all key/value needed to generate secrets
+  They are explained in table2.Secrets from doc/README.adoc
+  If azure-cli is correctly configured you only need to add
+  ```
+    STORAGE_ACCOUNT_LOGS_KEY=value
+    DATADOG_API_KEY=value
+  ```
+
+__! You will deploy on cluster ${PREFIX}mgmt.${LOCATION}.cloudapp.azure.com__   
+__! Require ssh access to azureuser@${PREFIX}mgmt.${LOCATION}.cloudapp.azure.com__
+
+Once done, execute following commands
+
+[source,numbered]
+    make generate/secrets # Browse scripts in scripts/secrets_generator/ to create secrets
+    make init   # Decrypt secret files
+    make apply  # Apply kubernetes configurations
+    make clean  # Delete unencrypted secret files
+
+== Variables
+=== Description
+Variables can be define in following places. +
+! Order matter
+
+1. k8s.cfg
+2. Shell environment
+3. k8s.default
+
+We have two types of variables, project and secret.
+By project variables, we mean all variables used to run k8s project.
+They are mandatory and must be define either in k8s.cfg either in global shell environment.
+
+Secrets variables are used to generate secrets files.
+You only need to define them if you want to create a new environment or if you want to update an existing one.
+
+All variables are explained below
+
+.Project
+[cols="4"]
+|===
+| Variables
+| Default value
+| Mandatory
+| Description
+
+| PREFIX
+| jenkinsci
+| v
+| In combination with LOCATION, use to know on which azure cluster we want to deploy/orchestrate k8s project
+
+| LOCATION
+| eastus
+| v
+| In combination with PREFIX, use to know on which azure cluster we want to deploy/orchestrate  k8s project
+
+| ENV
+| staging
+| v
+| Use to define which $ENV we want to deploy/orchestrated.
+
+|===
+
+.Secrets
+[cols="4"]
+|===
+| Variables
+| Default value
+| Mandatory
+| Description
+
+| AZURE_ARCHIVE_CONTAINER
+| k8slogs
+| Default value
+| Used by fluentd plugins to know on which container send logs
+
+| STORAGE_ACCOUNT_NAME
+| Defined by azure-cli
+| Not mandatory if azure-cli is working
+| Used by k8s to mount shared disk storage
+
+| STORAGE_ACCOUNT_KEY
+| Defined by azure-cli
+| Not mandatory if azure-cli is working
+| Used by k8s to mount shared disk storage
+
+| STORAGE_ACCOUNT_LOGS_KEY
+| x
+| v (cfr doc folder)
+| Used by fluentd-plugin-loganalytics
+
+| AZURE_OMS_CUSTOMER_ID
+| Defined by azure-cli
+| Not mandatory if azure-cli is working
+| Used by fluentd-plugin-loganalytics
+
+| DATADOG_API_KEY
+| x
+| v
+| Used to send collected data to datadog
+
+| DOCKER_REGISTRY_SERVER
+| x
+| v
+| Used to generate docker registry secret file
+
+
+| DOCKER_USER
+| x
+| v
+| Used to generate docker registry secret file
+
+
+| DOCKER_PASSWORD
+| x
+| v
+| Used to generate docker registry secret file
+
+| DOCKER_EMAIL
+| x
+| v
+| Used to generate docker registry secret file
+
+
+|===
 
 == Concernes
-include::doc/concernes.adoc[Concernes]
+Even if Kubernetes is a great tool, it also have missing features that must be knowned  
+and workarounds founded   
+Keep in mind that those missing features may be implemented in a near futur but we need solutions for today. 
+
+=== Kubernetes Resources
+
+==== Secrets
+
+When we update secret, for example with: 
+
+    kubectl apply -f secret.yaml
+
+Kubernetes doesn't reload resources that use this secret  +
+Which means that we cannot only update secrets but we also have to take care of each resources that consume this secret resource. +
+Secret doesn't keep a list of resources that use it.  
+    
+Suggestions:
+
+1. As suggested by kubernetes community, we can change secret's resources name, each time we apply a modification 
+   Ex.: secret become secret-1  
+   Reasons why I do not like this solution are: 
+
+    * Each time we update a secret, we have to update all secret's name referenced to this secret within all resources.
+      which can be quite cumbersomed and error prone.
+    * It become hard to define generic resources accross environments that use specific secrets  
+      Ex.: In dev, deployment.yaml linked to secret.yml become deployment-1.yaml linked to secret-6.yaml
+      because we modified 6 times secrets.yaml
+      and in production we should have deployment-1.yaml linked to secret-4.yaml
+      because only modified it 4 times
+    * It only work for deployments so anyways we have to manage daemonset differently
+
+2. A workaround would be to add a tag to each resources that use this secret 
+  secret-<secret_name>: linked
+  Each time we update a secret resource, we search for all pods with label secret-<secret_name> = linked
+  And we recreate them.  
+  Which is the solution implemented in scripts right now
+3. We need to find a way to do safe rolling update, at the moment we only delete/create pods
+
+==== ConfigMap
+
+Same problem than secrets, pods that use configmap values are not reloaded by a configmap change
+https://github.com/kubernetes/kubernetes/pull/31701
+
+
+==== Daemonset
+
+Daemonset changed, doesn't 'reload' pods created by daemonset  
+If daemonset changed, we have to delete all pods associated to it, new pods will immediately be created by the new daemonset configuration.   
+-> https://github.com/kubernetes/kubernetes/issues/22368  
+We need to find a way to do safe rolling update  
+
+=== General:
+
+If we want to automate resources deployments, we also need to 'publish' secrets on git repository.   
+Obviously those secrets must be encrypted.   
+
+Suggestions:
+* We can use either password either certificates for that  
+  Passords or Certificates must be convigured into jenkins in order to jenkins as a CD.  
+
+* Another solutions would be to use git submodules to git pull from private repository
+
+We can combine both solutions as well
