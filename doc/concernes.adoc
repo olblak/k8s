@@ -1,0 +1,63 @@
+Even if Kubernetes is a great tool, it also have missing features that must be knowned  
+and workarounds founded   
+Keep in mind that those missing features may be implemented in a near futur but we need solutions for today. 
+
+=== Kubernetes Resources
+
+==== Secrets
+
+When we update secret, for example with: 
+
+    kubectl apply -f secret.yaml
+
+Kubernetes doesn't reload resources that use this secret  +
+Which means that we cannot only update secrets but we also have to take care of each resources that consume this secret resource. +
+Secret doesn't keep a list of resources that use it.  
+    
+Suggestions:
+
+1. As suggested by kubernetes community, we can change secret's resources name, each time we apply a modification 
+   Ex.: secret become secret-1  
+   Reasons why I do not like this solution are: 
+
+    * Each time we update a secret, we have to update all secret's name referenced to this secret within all resources.
+      which can be quite cumbersomed and error prone.
+    * It become hard to define generic resources accross environments that use specific secrets  
+      Ex.: In dev, deployment.yaml linked to secret.yml become deployment-1.yaml linked to secret-6.yaml
+      because we modified 6 times secrets.yaml
+      and in production we should have deployment-1.yaml linked to secret-4.yaml
+      because only modified it 4 times
+    * It only work for deployments so anyways we have to manage daemonset differently
+
+2. A workaround would be to add a tag to each resources that use this secret 
+  secret-<secret_name>: linked
+  Each time we update a secret resource, we search for all pods with label secret-<secret_name> = linked
+  And we recreate them.  
+  Which is the solution implemented in scripts right now
+3. We need to find a way to do safe rolling update, at the moment we only delete/create pods
+
+==== ConfigMap
+
+Same problem than secrets, pods that use configmap values are not reloaded by a configmap change
+https://github.com/kubernetes/kubernetes/pull/31701
+
+
+==== Daemonset
+
+Daemonset changed, doesn't 'reload' pods created by daemonset  
+If daemonset changed, we have to delete all pods associated to it, new pods will immediately be created by the new daemonset configuration.   
+-> https://github.com/kubernetes/kubernetes/issues/22368  
+We need to find a way to do safe rolling update  
+
+=== General:
+
+If we want to automate resources deployments, we also need to 'publish' secrets on git repository.   
+Obviously those secrets must be encrypted.   
+
+Suggestions:
+* We can use either password either certificates for that  
+  Passords or Certificates must be convigured into jenkins in order to jenkins as a CD.  
+
+* Another solutions would be to use git submodules to git pull from private repository
+
+We can combine both solutions as well

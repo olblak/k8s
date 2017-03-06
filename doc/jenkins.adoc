@@ -1,0 +1,13 @@
+In order to run this project through Jenkins, we need to configure at least two following things.
+
+* SSH access to kubernetes cluster (cfr deployment section)
+** Add ssh credential with id 'staging-ssh-k8s' for staging 
+** Add ssh credential with id 'production-ssh-k8s' for production 
+* Private key to unencrypt secrets.
+** Add private keys to jenkins node that run the project
+
+At the moment Jenkinsfile is only configured to deploy on production or staging +
+It may be interesting to use jenkins-infra/azure project to provision testing cluster
+
+IMPORTANT: Environment defined by $ENV will be deploy on ${PREFIX}mgmt.${LOCATION}.cloudapp.azure.com.+
+Defaults values are defined in k8s.default

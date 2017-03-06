@@ -1,0 +1,67 @@
+=== Description
+In order to deploy this project into production we must execute following steps.
+
+* Generate staging&production private/public keys
+* Export plublic keys to './resources/configurations/production/public.key'
+* Add ssh credentials to jenkins configuration
+** Staging
+
+    type: username/ssh
+    username: 'azureuser'
+    credential_id: 'staging-ssh-k8s'
+
+** Production
+
+    type: username/ssh
+    username: 'azureuser'
+    credential_id: 'production-ssh-k8s'
+
+* Generate Secrets 
+** Staging
+*** Edit 'k8s.cfg'
+
+.k8s.cfg
+    DATADOG_API_KEY=<insert_value here>
+    STORAGE_ACCOUNT_LOGS_KEY=<insert_value here>
+    DOCKER_REGISTRY_SERVER=<insert_value here>
+    DOCKER_USER=<insert_value here>
+    DOCKER_PASSWORD=<insert_value here>
+    DOCKER_EMAIL=<insert_value here>
+    ENV=staging
+
+*** Generate secrets
+
+    make generate/secrets
+
+TIP: Repeat the same operation for production.
+
+** Production
+*** Edit k8s.cfg
+
+.k8s.cfg
+    DATADOG_API_KEY=<insert_value here>
+    STORAGE_ACCOUNT_LOGS_KEY=<insert_value here>
+    DOCKER_REGISTRY_SERVER=<insert_value here>
+    DOCKER_USER=<insert_value here>
+    DOCKER_PASSWORD=<insert_value here>
+    DOCKER_EMAIL=<insert_value here>
+    ENV=production
+
+*** Generate Secrets
+
+    make generate/secrets
+
+=== Validation Criteria
+
+* Test passed
+* Staging is correctly deployed
+* Staging Fluentd correctly send logs to log analytics
+* Staging Fluentd correctly send logs to shared disk storage
+* Datadog receive data
+* Plugins-jenkins is joinable through his public IP 
+    
+    make get/endpoint
+
+* All production configurations are committed
+
+IMPORTANT: Once merged into master, production should be able to be deployed without any modifications

@@ -1,0 +1,54 @@
+=== Makefile
+
+A makefile is provided to execute common tasks.
+
+[source,numbered]
+make init         # Create kubectl configuration with ssh and create secrets configuration files
+make apply        # Apply Kubernetes configurations 
+make clean        # Remove secrets conriguration files
+make status       # Print all pods on kubernetes cluster
+
+There are two ways to use this project.
+
+1. Deploy existing environment
+2. Create/Update an existing environment.
+
+== Deploy existing environment
+
+! Require ssh access to an existing azure environment and a private key to decrypt secrets
+
+* If necessary override key/value defined in k8s.default into k8s.cfg
+
+__! You will deploy on cluster ${PREFIX}mgmt.${LOCATION}.cloudapp.azure.com__  
+__! Require ssh access to azureuser@${PREFIX}mgmt.${LOCATION}.cloudapp.azure.com__
+
+[source,numbered]
+make init   # Create kubectl configuration with ssh and create secrets configuration files
+make apply  # Apply kubernetes configurations
+make clean  # Delete unencrypted secret files
+
+== Create/Update an environment
+
+! Require an existing azure environment
+
+* Add in k8s.cfg
+
+* If necessary override key/value defined in k8s.default into k8s.cfg
+* Add all key/value needed to generate secrets
+  They are explained in table2.Secrets from doc/README.adoc
+  If azure-cli is correctly configured you only need to add
+  ```
+    STORAGE_ACCOUNT_LOGS_KEY=value
+    DATADOG_API_KEY=value
+  ```
+
+__! You will deploy on cluster ${PREFIX}mgmt.${LOCATION}.cloudapp.azure.com__   
+__! Require ssh access to azureuser@${PREFIX}mgmt.${LOCATION}.cloudapp.azure.com__
+
+Once done, execute following commands
+
+[source,numbered]
+    make generate/secrets # Browse scripts in scripts/secrets_generator/ to create secrets
+    make init   # Decrypt secret files
+    make apply  # Apply kubernetes configurations
+    make clean  # Delete unencrypted secret files

@@ -1,0 +1,53 @@
+ifdef::env-github[]
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+endif::[]
+
+
+
+:sectid!:
+:idprefix:
+:sectnums: 3
+:sectanchors:
+
+
+:Author: Olblak
+:Email: me@olblak.com
+:Date: 03/03/2017
+
+= K8s: Orchestrator Project 
+:toc: right:
+:toclevels: 3
+
+== Introduction
+include::doc/introduction.adoc[Description]
+
+== Definition
+include::doc/definition.adoc[Definition]
+
+== Requirements
+include::doc/requirements.adoc[Requirements]
+
+== Secret Management
+include::doc/encryption.adoc[Secret Management documentation]
+
+== Deployment
+include::doc/deployment.adoc[Production deployment]
+
+== Jenkins
+include::doc/jenkins.adoc[Jenkins]
+
+== Docker Registry
+include::doc/docker-registry.adoc[Docker Registry documentation]
+
+== Variables
+include::doc/variables.adoc[Variables]
+
+== Makefile
+include::doc/makefile.adoc[Makefile]
+
+== Concernes
+include::doc/concernes.adoc[Concernes]

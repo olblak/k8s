@@ -1,0 +1,3 @@
+This project deploy and orchestrate jenkins-infra kubernetes project on azure cluster. +
+It contains three categories of resources. +
+We define them as definitions, configurations and systems.

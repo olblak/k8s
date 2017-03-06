@@ -9,6 +9,6 @@ In order to be able to automate this process we must define some rules. +
 ** Key validity: 0
 ** Real Name: <environment>-jenkinsinfra-k8s 
 ** Email: infra@lists.jenkins-ci.org
-** Comment: GPG key use to encrypt <environment> secrets for k8s
+** Comment: GPG key use to encrypt <environment> secrets for jenkinsinfra/k8s
 * Public keys are exported in configurations/<environment>/public.key and published on git +
     ``gpg --export --armor <environment>-jenkinsinfra-k8s > ./resources/configurations/<environment>/public.key``
