@@ -1,0 +1,45 @@
+version: '2'
+services:
+    apply:
+        build: .
+        image: k8s_environment
+        volumes:
+            - .:/k8s
+        command: make apply
+    clean:
+        build: .
+        image: k8s_environment
+        volumes:
+            - .:/k8s
+        command: make clean
+    get-endpoint:
+        build: .
+        image: k8s_environment
+        volumes:
+            - .:/k8s
+        command: make get/endpoint
+    init:
+        build: .
+        image: k8s_environment
+        volumes:
+            - .:/home/docker/k8s
+            - ~/.gnupg:/home/docker/.gnupg
+            - ~/.ssh:/home/docker/.ssh
+        working_dir: /home/docker/k8s
+        #command: make init
+        tty: true
+        stdin_open: true
+    status:
+        build: .
+        image: k8s_environment
+        volumes:
+            - .:/k8s
+        command: make status
+    test:
+        build: .
+        image: k8s_environment
+        tty: true
+        stdin_open: true
+        volumes:
+            - .:/k8s
+        command: make test
