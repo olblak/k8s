@@ -27,8 +27,12 @@ else {
 }
 
 try {
-    stage('Init'){
-        node{
+    docker.image('centos/7').inside(){
+        yum update -y
+        yum install -y epel-release
+        yum install -y make bats openssh-clients gpg
+
+        stage('Init'){
             deleteDir()
             checkout scm
             sshagent([sshk8skey]) {
@@ -36,17 +40,11 @@ try {
             }
             stash includes: '**', name: 'k8s-init'
         }
-    }
 
-    stage('Test'){
-        node{
+        stage('Test'){
             deleteDir()
             unstash 'k8s-init'
-            docker.image('centos/7').inside(){
-                yum update -y
-                yum install -y make bats
-                sh 'make test'
-            }
+            sh 'make test'
         }
     }
 
