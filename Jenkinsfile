@@ -27,7 +27,7 @@ else {
 }
 
 try {
-    docker.image('centos/7').inside(){
+    docker.image('centos:7').inside(){
         yum update -y
         yum install -y epel-release
         yum install -y make bats openssh-clients gpg
