@@ -27,7 +27,8 @@ else {
 }
 
 try {
-    docker.image('centos:7').withRun(){
+    def myEnv = docker.build('k8s_env:latest')
+    myEnv.withRun(){
         stage('Init'){
             deleteDir()
             checkout scm
