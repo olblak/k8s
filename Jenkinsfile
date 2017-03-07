@@ -27,21 +27,24 @@ else {
 }
 
 try {
-    def myEnv = docker.build('k8s_env:latest')
-    myEnv.withRun(){
-        stage('Init'){
-            deleteDir()
-            checkout scm
-            sshagent([sshk8skey]) {
-                sh 'make init'
+    node {
+        checkout scm
+        def myEnv = docker.build('k8s_env:latest')
+        myEnv.withRun(){
+            stage('Init'){
+                deleteDir()
+                checkout scm
+                sshagent([sshk8skey]) {
+                    sh 'make init'
+                }
+                stash includes: '**', name: 'k8s-init'
             }
-            stash includes: '**', name: 'k8s-init'
-        }
 
-        stage('Test'){
-            deleteDir()
-            unstash 'k8s-init'
-            sh 'make test'
+            stage('Test'){
+                deleteDir()
+                unstash 'k8s-init'
+                sh 'make test'
+            }
         }
     }
 
