@@ -28,10 +28,6 @@ else {
 
 try {
     docker.image('centos:7').withRun(){
-        yum update -y
-        yum install -y epel-release
-        yum install -y make bats openssh-clients gpg
-
         stage('Init'){
             deleteDir()
             checkout scm
