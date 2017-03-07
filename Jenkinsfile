@@ -29,7 +29,12 @@ else {
 try {
     node {
         checkout scm
-        def myEnv = docker.build('k8s_env:latest')
+        def myEnv
+        stage('Init Docker'){
+            deleteDir()
+            checkout scm
+            myEnv = docker.build('k8s_env:latest')
+        }
         myEnv.withRun(){
             stage('Init'){
                 deleteDir()
